@@ -1,7 +1,6 @@
 package com.frauddetection;
 
 import org.apache.flink.streaming.api.functions.source.SourceFunction;
-
 import java.util.Random;
 
 public class RandomTransactionSource implements SourceFunction<Transaction> {
@@ -11,14 +10,17 @@ public class RandomTransactionSource implements SourceFunction<Transaction> {
     @Override
     public void run(SourceContext<Transaction> ctx) throws Exception {
         while (isRunning) {
-            // Générer une transaction aléatoire
-            String transactionId = "T" + rand.nextInt(10000);
+            // Générer une transaction aléatoire avec les nouveaux champs
+            String transactionId = "TX" + rand.nextInt(100000); // Exemple : TX12345, TX98765, ...
+            String payerId = "Payer" + rand.nextInt(100); // Exemple : Payer1, Payer2, ...
             double amount = rand.nextDouble() * 5000; // Montant entre 0 et 5000
+            String beneficiaryId = "Beneficiary" + rand.nextInt(100); // Exemple : Beneficiary1, Beneficiary2, ...
+            String transactionType = rand.nextBoolean() ? "Debit" : "Credit"; // Choisir aléatoirement entre Debit ou Credit
 
-            // Créer une nouvelle transaction
-            Transaction transaction = new Transaction(transactionId, amount);
-            System.out.println("Transaction générée : " + transaction);
-            // Émettr e la transaction
+            // Créer une nouvelle transaction avec le transactionId unique
+            Transaction transaction = new Transaction(transactionId, payerId, System.currentTimeMillis(),amount, beneficiaryId, transactionType );
+
+            // Émettre la transaction
             ctx.collect(transaction);
 
             // Pause de 1 seconde entre les transactions

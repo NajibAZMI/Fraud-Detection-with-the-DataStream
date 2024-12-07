@@ -1,13 +1,13 @@
 package com.frauddetection;
 
 import org.apache.flink.streaming.api.functions.sink.SinkFunction;
+import javafx.application.Platform;
 
 public class AlertSink implements SinkFunction<Alert> {
 
     @Override
     public void invoke(Alert value, Context context) {
-        // Ajouter l'alerte à l'interface utilisateur JavaFX
-        FraudDetectionUI.addAlert(value);
+        System.out.println("Adding alert: " + value.getAlertRuleID() + ", " + value.getAlertDetails());
+        Platform.runLater(() -> FraudDetectionUI.getInstance().getMainView().addAlert(value));
     }
 }
-

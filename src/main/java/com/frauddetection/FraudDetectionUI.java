@@ -1,68 +1,105 @@
 package com.frauddetection;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.Scene;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class FraudDetectionUI extends Application {
 
-    // Listes pour stocker les transactions et les alertes
-    private static ObservableList<Transaction> transactionList = FXCollections.observableArrayList();
-    private static ObservableList<Alert> alertsList = FXCollections.observableArrayList();
+    private static FraudDetectionUI instance;
+    private MainView mainView;
+    private GestionRule gestionRule;
+    private Label dateLabel; // Label pour afficher la date actuelle
+
+    public FraudDetectionUI() {
+        instance = this;
+        this.mainView = new MainView(); // Initialiser MainView
+        this.gestionRule = new GestionRule();
+    }
+
+    public static FraudDetectionUI getInstance() {
+        return instance;
+    }
+
+    public MainView getMainView() {
+        return mainView; // Retourner l'instance de MainView
+    }
 
     @Override
     public void start(Stage stage) {
-        // TableView pour afficher les transactions
-        TableView<Transaction> transactionTable = new TableView<>();
-        TableColumn<Transaction, String> transactionIdCol = new TableColumn<>("Transaction ID");
-        transactionIdCol.setCellValueFactory(new PropertyValueFactory<>("transactionId"));
-        TableColumn<Transaction, Double> amountCol = new TableColumn<>("Amount");
-        amountCol.setCellValueFactory(new PropertyValueFactory<>("amount"));
+        // Initialiser le label pour afficher la date actuelle
+        dateLabel = new Label();
+        dateLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #333333; -fx-padding: 10px;");
+        updateDate(); // Mettre à jour la date une première fois
 
-        // Ajouter les colonnes à la table des transactions
-        transactionTable.getColumns().addAll(transactionIdCol, amountCol);
+        // Configurer un Timeline pour mettre à jour la date chaque seconde
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.seconds(1), e -> updateDate())
+        );
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
 
-        // TableView pour afficher les alertes
-        TableView<Alert> alertsTable = new TableView<>();
-        TableColumn<Alert, String> alertTransactionIdCol = new TableColumn<>("Transaction ID");
-        alertTransactionIdCol.setCellValueFactory(new PropertyValueFactory<>("transactionId"));
-        TableColumn<Alert, String> messageCol = new TableColumn<>("Message");
-        messageCol.setCellValueFactory(new PropertyValueFactory<>("message"));
+        // Créer les vues
+        StatisticsView statisticsView = new StatisticsView(mainView);
+        RuleManagementView ruleManagementView = new RuleManagementView(gestionRule);
 
-        // Ajouter les colonnes à la table des alertes
-        alertsTable.getColumns().addAll(alertTransactionIdCol, messageCol);
+        // Créer le TabPane
+        TabPane tabPane = new TabPane();
 
-        // Associer les listes aux tables
-        transactionTable.setItems(transactionList);
-        alertsTable.setItems(alertsList);
+        Tab mainTab = new Tab("Transactions & Alerts", mainView.getView());
+        mainTab.setClosable(false);
 
-        // Mise en page
-        VBox vbox = new VBox(transactionTable, alertsTable);
+        Tab statisticsTab = new Tab("Statistics", statisticsView.getView());
+        statisticsTab.setClosable(false);
 
-        // Créer une scène et l'afficher
-        Scene scene = new Scene(vbox, 800, 600);
+        Tab ruleManagementTab = new Tab("Rule Management", ruleManagementView.getView());
+        ruleManagementTab.setClosable(false);
+
+        tabPane.getTabs().addAll(mainTab, statisticsTab, ruleManagementTab);
+
+        // Appliquer les styles pour TabPane
+        tabPane.setStyle(
+                "-fx-padding: 10px;" +
+                        "-fx-border-color: #dddddd;" +
+                        "-fx-border-width: 2px;" +
+                        "-fx-border-radius: 5px;" +
+                        "-fx-tab-min-width: 150px;" +
+                        "-fx-tab-max-width: 200px;"
+        );
+
+        // Ajouter le label de date et le TabPane à un VBox
+        VBox root = new VBox(dateLabel, tabPane);
+        root.setStyle("-fx-background-color: white;"); // Appliquer un fond blanc
+
+        // Configurer la scène
+        Scene scene = new Scene(root, 1000, 1000);
         stage.setScene(scene);
         stage.setTitle("Fraud Detection System");
         stage.show();
+
+        // Lancer la mise à jour des statistiques
+        statisticsView.startStatisticsUpdater();
     }
 
-    // Méthodes statiques pour ajouter des transactions et des alertes
-    public static void addTransaction(Transaction transaction) {
-        transactionList.add(transaction);
+    /**
+     * Mettre à jour le label avec la date et l'heure actuelles.
+     */
+    private void updateDate() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        dateLabel.setText("Current Date: " + LocalDateTime.now().format(formatter));
     }
 
-    public static void addAlert(Alert alert) {
-        alertsList.add(alert);
-    }
-
-    // Méthode main pour lancer l'application JavaFX
     public static void main(String[] args) {
-        launch(args);
+        launch(args); // Lancer l'interface JavaFX
     }
 }

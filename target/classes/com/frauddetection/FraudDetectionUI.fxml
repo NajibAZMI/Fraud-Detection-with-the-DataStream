@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.collections.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.frauddetection.FraudDetectionUIController" spacing="10" alignment="CENTER" prefWidth="800" prefHeight="600">
+    <TableView fx:id="transactionTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn text="Transaction ID" fx:id="transactionIdCol" />
+            <TableColumn text="Amount" fx:id="amountCol" />
+        </columns>
+    </TableView>
+    <TableView fx:id="alertsTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn text="Transaction ID" fx:id="alertTransactionIdCol" />
+            <TableColumn text="Message" fx:id="messageCol" />
+        </columns>
+    </TableView>
+</VBox>

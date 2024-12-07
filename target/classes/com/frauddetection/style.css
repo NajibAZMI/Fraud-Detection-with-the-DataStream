@@ -1,0 +1,17 @@
+.label-total-transactions {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0078D7; /* Bleu */
+}
+
+.label-total-alerts {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #FF5733; /* Rouge */
+}
+
+.label-fraud-percentage {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #28A745; /* Vert */
+}
