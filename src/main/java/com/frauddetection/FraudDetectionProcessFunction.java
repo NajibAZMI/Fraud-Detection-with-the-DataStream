@@ -107,8 +107,7 @@ public class FraudDetectionProcessFunction extends KeyedProcessFunction<String, 
                 String groupById = rule.getGroupingKeyNames().equals("payerId") ? transaction.getPayerId() :
                         rule.getGroupingKeyNames().equals("beneficiaryId") ? transaction.getBeneficiaryId() : "Unknown";
                 out.collect(new Alert(
-                        "ID:" + rule.getRuleId(),
-                        "Fraud detected for rule " + rule.getRuleId() + ": Condition " + rule.getAggregatorFunctionType() + " " +
+                        "ID:" + rule.getRuleId(), " Condition " + rule.getAggregatorFunctionType() + " " +
                                 rule.getLimitOperatorType() + " " + rule.getLimit() + " for " + rule.getGroupingKeyNames() +
                                 " for ID: " + groupById,
                         System.currentTimeMillis()

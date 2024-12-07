@@ -10,6 +10,12 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class MainView {
 
@@ -49,12 +55,34 @@ public class MainView {
         statsBox.setAlignment(Pos.CENTER); // Centrer les labels horizontalement
         statsBox.setStyle("-fx-padding: 10px;"); // Espacement autour des labels
 
-        // Conteneur horizontal pour les tables
-        HBox tablesContainer = new HBox(20, transactionTable, alertsTable);
+        // Conteneur pour la table des transactions avec le bouton en bas
+        Button transactionButton = new Button("Exporter Transactions");
+        transactionButton.setOnAction(e -> {
+            // Action spécifique pour les transactions
+            System.out.println("Bouton Transactions cliqué");
+            exportToCSV(transactionList, "Transactions");
+        });
+        VBox transactionContainer = new VBox(10, transactionTable, transactionButton);
+        transactionContainer.setAlignment(Pos.CENTER);
+        transactionContainer.setStyle("-fx-padding: 10px;");
+
+        // Conteneur pour la table des alertes avec le bouton en bas
+        Button alertsButton = new Button("Exporter Alertes");
+        alertsButton.setOnAction(e -> {
+            // Action spécifique pour les alertes
+            System.out.println("Bouton Alertes cliqué");
+            exportToCSV(alertsList, "Alertes");
+        });
+        VBox alertsContainer = new VBox(10, alertsTable, alertsButton);
+        alertsContainer.setAlignment(Pos.CENTER);
+        alertsContainer.setStyle("-fx-padding: 10px;");
+
+        // Conteneur horizontal pour les deux sections
+        HBox tablesContainer = new HBox(20, transactionContainer, alertsContainer);
         tablesContainer.setStyle("-fx-padding: 10px; -fx-background-color: #ffffff; -fx-border-color: #dddddd; " +
                 "-fx-border-width: 2px; -fx-border-radius: 5px;");
-        tablesContainer.setPrefHeight(400); // Hauteur fixe des tables
-        tablesContainer.setPrefWidth(800);  // Largeur totale des tables
+        tablesContainer.setPrefHeight(900); // Hauteur des tables
+        tablesContainer.setPrefWidth(800);  // Largeur totale
         tablesContainer.setAlignment(Pos.CENTER);
 
         // Retourner un VBox contenant les labels et les tables côte à côte
@@ -74,61 +102,54 @@ public class MainView {
         TableColumn<Transaction, String> transactionIdCol = new TableColumn<>("Transaction ID");
         transactionIdCol.setCellValueFactory(new PropertyValueFactory<>("transactionId"));
         transactionTable.getColumns().add(transactionIdCol);
-        transactionIdCol.setPrefWidth(200);
+        transactionIdCol.setPrefWidth(70);
 
         TableColumn<Transaction, String> payerIdCol = new TableColumn<>("Payer ID");
         payerIdCol.setCellValueFactory(new PropertyValueFactory<>("payerId"));
         transactionTable.getColumns().add(payerIdCol);
-        payerIdCol.setPrefWidth(200);
+        payerIdCol.setPrefWidth(100);
 
         TableColumn<Transaction, Double> amountCol = new TableColumn<>("Amount");
         amountCol.setCellValueFactory(new PropertyValueFactory<>("amount"));
         transactionTable.getColumns().add(amountCol);
-        amountCol.setPrefWidth(200);
+        amountCol.setPrefWidth(100);
 
         TableColumn<Transaction, String> beneficiaryIdCol = new TableColumn<>("Beneficiary ID");
         beneficiaryIdCol.setCellValueFactory(new PropertyValueFactory<>("beneficiaryId"));
         transactionTable.getColumns().add(beneficiaryIdCol);
-        beneficiaryIdCol.setPrefWidth(200);
+        beneficiaryIdCol.setPrefWidth(100);
 
         TableColumn<Transaction, String> timestampCol = new TableColumn<>("Timestamp");
         timestampCol.setCellValueFactory(new PropertyValueFactory<>("formattedTimestamp"));
         transactionTable.getColumns().add(timestampCol);
-        timestampCol.setPrefWidth(200);
+        timestampCol.setPrefWidth(150);
 
         transactionTable.setItems(transactionList);
-
-
     }
 
     private void createAlertTable() {
         TableColumn<Alert, String> alertTransactionIdCol = new TableColumn<>("Rule");
         alertTransactionIdCol.setCellValueFactory(new PropertyValueFactory<>("alertRuleID"));
         alertsTable.getColumns().add(alertTransactionIdCol);
-        alertTransactionIdCol.setPrefWidth(200);
+        alertTransactionIdCol.setPrefWidth(50);
 
         TableColumn<Alert, String> messageCol = new TableColumn<>("Details");
         messageCol.setCellValueFactory(new PropertyValueFactory<>("alertDetails"));
         alertsTable.getColumns().add(messageCol);
-        messageCol.setPrefWidth(600);
+        messageCol.setPrefWidth(400);
 
         TableColumn<Alert, String> timestampCol = new TableColumn<>("Timestamp");
         timestampCol.setCellValueFactory(new PropertyValueFactory<>("formattedTimestamp"));
         alertsTable.getColumns().add(timestampCol);
-        timestampCol.setPrefWidth(200);
+        timestampCol.setPrefWidth(150);
 
         alertsTable.setItems(alertsList);
-
-
     }
 
     // Méthode pour styliser les tables
-
-
     public void addTransaction(Transaction transaction) {
         transactionList.add(transaction);
         updateTransactionCount();
-
 
         // Appeler la méthode pour enregistrer les statistiques des transactions
         alertTransactionUpdate.addTransaction();
@@ -138,7 +159,6 @@ public class MainView {
     public void addAlert(Alert alert) {
         alertsList.add(alert);
         updateAlertCount();
-
 
         // Appeler la méthode pour enregistrer les statistiques des alertes
         alertTransactionUpdate.addAlert(alert);
@@ -159,6 +179,40 @@ public class MainView {
             fraudPercentageLabel.setText(String.format("Fraud Percentage: %.2f%%", fraudPercentage));
         } else {
             fraudPercentageLabel.setText("Fraud Percentage: 0%");
+        }
+    }
+
+    // Méthode pour exporter les données en CSV
+    private void exportToCSV(ObservableList<?> dataList, String type) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+        File file = fileChooser.showSaveDialog(new Stage());
+
+        if (file != null) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                // Ecrire l'entête
+                if (type.equals("Transactions")) {
+                    writer.write("Transaction ID,Payer ID,Amount,Beneficiary ID,Timestamp\n");
+                    for (Transaction transaction : (ObservableList<Transaction>) dataList) {
+                        writer.write(transaction.getTransactionId() + ","
+                                + transaction.getPayerId() + ","
+                                + transaction.getAmount() + ","
+                                + transaction.getBeneficiaryId() + ","
+                                + transaction.getFormattedTimestamp() + "\n");
+                    }
+                } else if (type.equals("Alertes")) {
+                    writer.write("Rule,Details,Timestamp\n");
+                    for (Alert alert : (ObservableList<Alert>) dataList) {
+                        writer.write(alert.getAlertRuleID() + ","
+                                + alert.getAlertDetails() + ","
+                                + alert.getFormattedTimestamp() + "\n");
+                    }
+                }
+                System.out.println(type + " exported to CSV successfully.");
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("Error while exporting to CSV.");
+            }
         }
     }
 }

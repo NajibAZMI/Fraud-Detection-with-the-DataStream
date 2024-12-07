@@ -82,7 +82,7 @@ public class FraudDetectionUI extends Application {
         root.setStyle("-fx-background-color: white;"); // Appliquer un fond blanc
 
         // Configurer la scène
-        Scene scene = new Scene(root, 1000, 1000);
+        Scene scene = new Scene(root, 1500, 1000);
         stage.setScene(scene);
         stage.setTitle("Fraud Detection System");
         stage.show();
