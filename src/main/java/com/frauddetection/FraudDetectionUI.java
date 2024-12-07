@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -39,7 +40,8 @@ public class FraudDetectionUI extends Application {
     public void start(Stage stage) {
         // Initialiser le label pour afficher la date actuelle
         dateLabel = new Label();
-        dateLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #333333; -fx-padding: 10px;");
+        dateLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #FFFFFF;");
+
         updateDate(); // Mettre à jour la date une première fois
 
         // Configurer un Timeline pour mettre à jour la date chaque seconde
@@ -49,40 +51,45 @@ public class FraudDetectionUI extends Application {
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
 
+        // Créer une barre horizontale
+        HBox topBar = new HBox(dateLabel);
+        topBar.setPrefHeight(80); // Fixer la hauteur de la barre
+        topBar.setStyle("-fx-background-color: #007BFF; -fx-alignment: center-left; -fx-padding: 10px;");
+
         // Créer les vues
         StatisticsView statisticsView = new StatisticsView(mainView);
         RuleManagementView ruleManagementView = new RuleManagementView(gestionRule);
 
         // Créer le TabPane
         TabPane tabPane = new TabPane();
-
         Tab mainTab = new Tab("Transactions & Alerts", mainView.getView());
         mainTab.setClosable(false);
+        mainTab.setStyle("-fx-background-color: #007BFF; -fx-text-fill: white;");
 
         Tab statisticsTab = new Tab("Statistics", statisticsView.getView());
         statisticsTab.setClosable(false);
+        statisticsTab.setStyle("-fx-background-color: #28A745; -fx-text-fill: white;");
 
         Tab ruleManagementTab = new Tab("Rule Management", ruleManagementView.getView());
         ruleManagementTab.setClosable(false);
+        ruleManagementTab.setStyle("-fx-background-color: #FFC107; -fx-text-fill: white; ");
 
         tabPane.getTabs().addAll(mainTab, statisticsTab, ruleManagementTab);
 
-        // Appliquer les styles pour TabPane
+        // Appliquer un style minimaliste au TabPane
         tabPane.setStyle(
-                "-fx-padding: 10px;" +
-                        "-fx-border-color: #dddddd;" +
-                        "-fx-border-width: 2px;" +
-                        "-fx-border-radius: 5px;" +
-                        "-fx-tab-min-width: 150px;" +
-                        "-fx-tab-max-width: 200px;"
+                "-fx-tab-min-width: 390px; " +
+                        "-fx-tab-max-width: 1000px; " +
+                        "-fx-background-color: #F9F9F9; " +
+                        "-fx-border-color: #CCCCCC;"
         );
 
-        // Ajouter le label de date et le TabPane à un VBox
-        VBox root = new VBox(dateLabel, tabPane);
-        root.setStyle("-fx-background-color: white;"); // Appliquer un fond blanc
+        // Ajouter la barre horizontale et le TabPane à un VBox
+        VBox root = new VBox(topBar, tabPane);
+        root.setStyle("-fx-background-color: #FFFFFF; -fx-padding: 0;");
 
         // Configurer la scène
-        Scene scene = new Scene(root, 1500, 1000);
+        Scene scene = new Scene(root, 1000, 1000);
         stage.setScene(scene);
         stage.setTitle("Fraud Detection System");
         stage.show();
