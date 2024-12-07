@@ -51,6 +51,19 @@ public class MainView {
             System.out.println("Error loading image");
         }
 
+        Image transactionNumberIcon = new Image(getClass().getResourceAsStream("/images/transaction.png"));
+        if (telechargeIcon.isError()) {
+            System.out.println("Error loading image");
+        }
+        Image AlertNumberIcon = new Image(getClass().getResourceAsStream("/images/alert.png"));
+        if (telechargeIcon.isError()) {
+            System.out.println("Error loading image");
+        }
+        Image PourcentageIcon = new Image(getClass().getResourceAsStream("/images/fleches.png"));
+        if (telechargeIcon.isError()) {
+            System.out.println("Error loading image");
+        }
+
         // Créer les instances d'ImageView séparées pour chaque bouton
         ImageView telechargeIconForTransaction = new ImageView(telechargeIcon);
         telechargeIconForTransaction.setFitHeight(20);
@@ -60,18 +73,31 @@ public class MainView {
         telechargeIconForAlert.setFitHeight(20);
         telechargeIconForAlert.setFitWidth(20);
 
+        ImageView IconForTransaction = new ImageView(transactionNumberIcon);
+        IconForTransaction.setFitHeight(35);
+        IconForTransaction.setFitWidth(35);
+
+        ImageView IconForAlert = new ImageView(AlertNumberIcon);
+        IconForAlert.setFitHeight(35);
+        IconForAlert.setFitWidth(35);
+
+        ImageView IconForPourcentage = new ImageView(PourcentageIcon);
+        IconForPourcentage.setFitHeight(35);
+        IconForPourcentage.setFitWidth(35);
         totalTransactionsLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #0078D7; "
-                + "-fx-border-color: #0078D7; -fx-border-width: 2px; -fx-background-color: #D9EAF7; "
+                + "-fx-border-color: #0078D7; -fx-border-width: 2px; -fx-background-color: #FFFFFF; "
                 + "-fx-padding: 10px; -fx-border-radius: 5px; -fx-background-radius: 5px;");
+        totalTransactionsLabel.setGraphic(IconForTransaction);
 
         totalAlertsLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #FF5733; "
-                + "-fx-border-color: #FF5733; -fx-border-width: 2px; -fx-background-color: #FDE4E4; "
+                + "-fx-border-color: #FF5733; -fx-border-width: 2px; -fx-background-color: #FFFFFF; "
                 + "-fx-padding: 10px; -fx-border-radius: 5px; -fx-background-radius: 5px;");
+        totalAlertsLabel.setGraphic(IconForAlert);
 
         fraudPercentageLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #28A745; "
-                + "-fx-border-color: #28A745; -fx-border-width: 2px; -fx-background-color: #E7F8EC; "
+                + "-fx-border-color: #28A745; -fx-border-width: 2px; -fx-background-color: #FFFFFF; "
                 + "-fx-padding: 10px; -fx-border-radius: 5px; -fx-background-radius: 5px;");
-
+        fraudPercentageLabel.setGraphic(IconForPourcentage);
         // Conteneur horizontal pour les labels
         HBox statsBox = new HBox(20, totalTransactionsLabel, totalAlertsLabel, fraudPercentageLabel);
         statsBox.setAlignment(Pos.CENTER); // Centrer les labels horizontalement
