@@ -7,15 +7,21 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
+import java.awt.*;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class MainView {
 
@@ -37,7 +43,21 @@ public class MainView {
     }
 
     public VBox getView() {
-        // Styles pour chaque label avec bordure et couleur de fond
+        // Charger l'image
+        Image telechargeIcon = new Image(getClass().getResourceAsStream("/images/telechargements.png"));
+        if (telechargeIcon.isError()) {
+            System.out.println("Error loading image");
+        }
+
+        // Créer les instances d'ImageView séparées pour chaque bouton
+        ImageView telechargeIconForTransaction = new ImageView(telechargeIcon);
+        telechargeIconForTransaction.setFitHeight(20);
+        telechargeIconForTransaction.setFitWidth(20);
+
+        ImageView telechargeIconForAlert = new ImageView(telechargeIcon);
+        telechargeIconForAlert.setFitHeight(20);
+        telechargeIconForAlert.setFitWidth(20);
+
         totalTransactionsLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #0078D7; "
                 + "-fx-border-color: #0078D7; -fx-border-width: 2px; -fx-background-color: #D9EAF7; "
                 + "-fx-padding: 10px; -fx-border-radius: 5px; -fx-background-radius: 5px;");
@@ -57,6 +77,8 @@ public class MainView {
 
         // Conteneur pour la table des transactions avec le bouton en bas
         Button transactionButton = new Button("Exporter Transactions");
+        // Ajouter l'icône au bouton
+        transactionButton.setGraphic(telechargeIconForTransaction);
         transactionButton.setOnAction(e -> {
             // Action spécifique pour les transactions
             System.out.println("Bouton Transactions cliqué");
@@ -68,6 +90,8 @@ public class MainView {
 
         // Conteneur pour la table des alertes avec le bouton en bas
         Button alertsButton = new Button("Exporter Alertes");
+        // Ajouter l'icône au bouton
+        alertsButton.setGraphic(telechargeIconForAlert);
         alertsButton.setOnAction(e -> {
             // Action spécifique pour les alertes
             System.out.println("Bouton Alertes cliqué");
@@ -88,6 +112,7 @@ public class MainView {
         // Retourner un VBox contenant les labels et les tables côte à côte
         return new VBox(20, statsBox, tablesContainer);
     }
+
 
     public ObservableList<Transaction> getTransactionList() {
         return transactionList;
@@ -216,3 +241,4 @@ public class MainView {
         }
     }
 }
+

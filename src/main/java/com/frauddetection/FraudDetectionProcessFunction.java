@@ -44,7 +44,6 @@ public class FraudDetectionProcessFunction extends KeyedProcessFunction<String, 
 
     @Override
     public void processElement(Transaction transaction, Context context, Collector<Alert> out) throws Exception {
-        System.out.println("Processing transaction: " + transaction);
 
         // Récupérer les états actuels
         Map<String, Double> aggregationValues = aggregationState.value();
@@ -58,15 +57,12 @@ public class FraudDetectionProcessFunction extends KeyedProcessFunction<String, 
             firstTransactionTimestampState.update(firstTransactionTimestamp);
         }
 
-        System.out.println("Current first transaction timestamp: " + firstTransactionTimestamp);
 
         // Appliquer toutes les règles à la transaction
         for (Rule rule : rules) {
             // Vérifier si l'intervalle de temps dépasse la durée de la fenêtre définie dans la règle
             long windowMillis = Long.parseLong(rule.getWindowMinutes()) * 60 * 1000;  // Convertir en millisecondes
             if (transaction.getTimeTamp() - firstTransactionTimestamp > windowMillis) {
-                System.out.println("Resetting aggregation values due to time window exceeding: " + windowMillis);
-                // Réinitialiser l'état si l'intervalle est dépassé
                 aggregationValues.clear();
                 firstTransactionTimestamp = transaction.getTimeTamp();
                 firstTransactionTimestampState.update(firstTransactionTimestamp);

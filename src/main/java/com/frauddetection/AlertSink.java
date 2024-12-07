@@ -7,7 +7,6 @@ public class AlertSink implements SinkFunction<Alert> {
 
     @Override
     public void invoke(Alert value, Context context) {
-        System.out.println("Adding alert: " + value.getAlertRuleID() + ", " + value.getAlertDetails());
-        Platform.runLater(() -> FraudDetectionUI.getInstance().getMainView().addAlert(value));
+          Platform.runLater(() -> FraudDetectionUI.getInstance().getMainView().addAlert(value));
     }
 }

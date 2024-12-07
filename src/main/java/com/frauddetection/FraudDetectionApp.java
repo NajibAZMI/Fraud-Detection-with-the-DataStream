@@ -51,8 +51,7 @@ public class FraudDetectionApp {
             DataStream<Alert> alerts = keyedStream.process(new FraudDetectionProcessFunction(gestionRule.getActiveRules()));
 
             // Ajouter des sinks pour envoyer les transactions et alertes vers des logs ou une interface
-            transactionStream.print("Transaction Stream");
-            alerts.print("Alert Stream");
+
             transactionStream.addSink(new TransactionSink());
             alerts.addSink(new AlertSink());
 
