@@ -42,6 +42,8 @@ public class MainView {
         createAlertTable();
     }
 
+
+
     public VBox getView() {
         // Charger l'image
         Image telechargeIcon = new Image(getClass().getResourceAsStream("/images/telechargements.png"));
@@ -84,6 +86,13 @@ public class MainView {
             System.out.println("Bouton Transactions cliqué");
             exportToCSV(transactionList, "Transactions");
         });
+
+        // Hover effect for transaction button
+        // Hover effect for transaction button
+
+
+
+
         VBox transactionContainer = new VBox(10, transactionTable, transactionButton);
         transactionContainer.setAlignment(Pos.CENTER);
         transactionContainer.setStyle("-fx-padding: 10px;");
@@ -97,6 +106,43 @@ public class MainView {
             System.out.println("Bouton Alertes cliqué");
             exportToCSV(alertsList, "Alertes");
         });
+
+        // Transaction Button
+        transactionButton.setStyle("-fx-font-size: 16px; -fx-text-fill: #28A745; -fx-background-color: #FFFFFF; " +
+                "-fx-border-color: #28A745; -fx-border-width: 2px; -fx-padding: 10px 20px; " +
+                "-fx-border-radius: 5px; -fx-background-radius: 5px;");
+
+        transactionButton.setOnMouseEntered(event -> {
+            transactionButton.setStyle("-fx-font-size: 16px; -fx-text-fill: #FFFFFF; -fx-background-color: #28A745; " +
+                    "-fx-border-color: #FFFFFF; -fx-border-width: 2px; -fx-padding: 10px 20px; " +
+                    "-fx-border-radius: 5px; -fx-background-radius: 5px;");
+        });
+
+        transactionButton.setOnMouseExited(event -> {
+            System.out.println("Mouse exited transaction button");
+            transactionButton.setStyle("-fx-font-size: 16px; -fx-text-fill: #28A745; -fx-background-color: #FFFFFF; " +
+                    "-fx-border-color: #28A745; -fx-border-width: 2px; -fx-padding: 10px 20px; " +
+                    "-fx-border-radius: 5px; -fx-background-radius: 5px;");
+        });
+        alertsButton.setStyle("-fx-font-size: 16px; -fx-text-fill: #28A745; -fx-background-color: #FFFFFF; " +
+                "-fx-border-color: #28A745; -fx-border-width: 2px; -fx-padding: 10px 20px; " +
+                "-fx-border-radius: 5px; -fx-background-radius: 5px;");
+
+        alertsButton.setOnMouseEntered(event -> {
+            alertsButton.setStyle("-fx-font-size: 16px; -fx-text-fill: #FFFFFF; -fx-background-color: #28A745; " +
+                    "-fx-border-color: #FFFFFF; -fx-border-width: 2px; -fx-padding: 10px 20px; " +
+                    "-fx-border-radius: 5px; -fx-background-radius: 5px;");
+        });
+
+        alertsButton.setOnMouseExited(event -> {
+            System.out.println("Mouse exited alert button");
+            alertsButton.setStyle("-fx-font-size: 16px; -fx-text-fill: #28A745; -fx-background-color: #FFFFFF; " +
+                    "-fx-border-color: #28A745; -fx-border-width: 2px; -fx-padding: 10px 20px; " +
+                    "-fx-border-radius: 5px; -fx-background-radius: 5px;");
+        });
+
+
+
         VBox alertsContainer = new VBox(10, alertsTable, alertsButton);
         alertsContainer.setAlignment(Pos.CENTER);
         alertsContainer.setStyle("-fx-padding: 10px;");
